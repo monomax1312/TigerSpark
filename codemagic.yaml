@@ -1,0 +1,42 @@
+# Tiger Spark — Codemagic CI/CD
+# Документация: https://docs.codemagic.io/yaml-quick-start/building-a-flutter-app
+
+workflows:
+  tiger-spark-ios:
+    name: Tiger Spark iOS
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      flutter: stable
+      # Раскомментировать после настройки подписи в Codemagic (Team settings → Code signing):
+      # ios_signing:
+      #   distribution_type: app_store
+      #   bundle_identifier: com.tigerspark.tigerSpark
+    scripts:
+      - name: Get Flutter packages
+        script: flutter pub get
+      - name: Run tests
+        script: flutter test
+      - name: Build iOS (unsigned)
+        script: flutter build ios --release
+    artifacts:
+      - build/ios/**/Runner.app
+
+  tiger-spark-android:
+    name: Tiger Spark Android
+    max_build_duration: 60
+    instance_type: linux_x2
+    environment:
+      flutter: stable
+      # Раскомментировать после загрузки keystore в Codemagic:
+      # android_signing:
+      #   - keystore_reference
+    scripts:
+      - name: Get Flutter packages
+        script: flutter pub get
+      - name: Run tests
+        script: flutter test
+      - name: Build Android APK
+        script: flutter build apk --release
+    artifacts:
+      - build/app/outputs/flutter-apk/*.apk
